@@ -1704,14 +1704,18 @@ class Model
 		}
 		$results = count($list);
 
-		//for php 7.2, $values cannot be a string!  must be an array or null
-		if (is_string($values) && !empty($values)) $values = [$values];
+//<<<<<<< HEAD
+//		//for php 7.2, $values cannot be a string!  must be an array or null
+//		if (is_string($values) && !empty($values)) $values = [$values];
+//=======
+        if (!is_array($values))
+            $values = array($values);
+//>>>>>>> df1206da4c144b7d352dcb6a2a2b1dc1c19a6b44
 
 		if ($results != ($expected = count($values)))
 		{
 			$class = get_called_class();
-			if (is_array($values))
-				$values = join(',',$values);
+			$values = join(',',$values);
 
 			if ($expected == 1)
 			{
