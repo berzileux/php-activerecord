@@ -1,6 +1,6 @@
 Version 1.2.1 - April 12, 2021
 
-- TODO
+- a814545 fixed deprecation issue with 'implode' function's arguments placing
 
 Version 1.0 - June 27, 2010
 
