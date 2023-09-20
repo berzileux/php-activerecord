@@ -26,8 +26,10 @@ sudo apt -y install postgresql-12 postgresql-client-12
 ```
 
 ### localhost connections
+
 ```
 sudo sed -i "s/#listen_addresses = 'localhost'/listen_addresses = '*'/g" /etc/postgresql/12/main/postgresql.conf
+sudo sed -i "s/port = 5432/port = 5433/g" /etc/postgresql/12/main/postgresql.conf
 ```
 
 ### identify users via "md5", rather than "ident", allowing us to make postgres users separate from system users. "md5" lets us simply use a password

@@ -51,7 +51,7 @@ ActiveRecord\Config::initialize(function($cfg)
 		'sqlite' => getenv('PHPAR_SQLITE') ?: 'sqlite://test.db'));*/
 
 	$cfg->set_connections(array(
-	    'pgsql'  => getenv('PHPAR_PGSQL')  ?: 'pgsql://test:test@127.0.0.1/test'));
+	    'pgsql'  => getenv('PHPAR_PGSQL')  ?: 'pgsql://test:test@127.0.0.1:5433/test'));
 
 	$cfg->set_default_connection('pgsql');
 
