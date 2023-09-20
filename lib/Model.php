@@ -698,7 +698,8 @@ class Model
 	 */
 	private function is_delegated($name, &$delegate)
 	{
-		if ($delegate['prefix'] != '')
+	    //php8.2 make sure that we are referencing against an array
+	    if (is_array($delegate) && $delegate['prefix'] != '')
 			$name = substr($name,strlen($delegate['prefix'])+1);
 
 		if (is_array($delegate) && in_array($name,$delegate['delegate']))
@@ -1470,7 +1471,8 @@ class Model
 	 */
 	public static function all(/* ... */)
 	{
-		return call_user_func_array('static::find',array_merge(array('all'),func_get_args()));
+		//php8.2 - return call_user_func_array('static::find',array_merge(array('all'),func_get_args()));
+	    return call_user_func_array(static::class . '::find',array_merge(array('all'),func_get_args()));
 	}
 
 	/**
@@ -1494,7 +1496,8 @@ class Model
 			if (is_hash($args[0]))
 				$options['conditions'] = $args[0];
 			else
-				$options['conditions'] = call_user_func_array('static::pk_conditions',$args);
+			    $options['conditions'] = call_user_func_array(static::class . '::pk_conditions',$args);
+				//php8.2 - $options['conditions'] = call_user_func_array('static::pk_conditions',$args);
 		}
 
 		$table = static::table();
@@ -1517,7 +1520,8 @@ class Model
 	 */
 	public static function exists(/* ... */)
 	{
-		return call_user_func_array('static::count',func_get_args()) > 0 ? true : false;
+		//php8.2 - return call_user_func_array('static::count',func_get_args()) > 0 ? true : false;
+	    return call_user_func_array(static::class . '::count',func_get_args()) > 0 ? true : false;
 	}
 
 	/**
@@ -1528,7 +1532,8 @@ class Model
 	 */
 	public static function first(/* ... */)
 	{
-		return call_user_func_array('static::find',array_merge(array('first'),func_get_args()));
+		//php8.2 - return call_user_func_array('static::find',array_merge(array('first'),func_get_args()));
+	    return call_user_func_array(static::class . '::find',array_merge(array('first'),func_get_args()));
 	}
 
 	/**
@@ -1539,7 +1544,8 @@ class Model
 	 */
 	public static function last(/* ... */)
 	{
-		return call_user_func_array('static::find',array_merge(array('last'),func_get_args()));
+		//php8.2 - return call_user_func_array('static::find',array_merge(array('last'),func_get_args()));
+	    return call_user_func_array(static::class . '::find',array_merge(array('last'),func_get_args()));
 	}
 
 	/**
@@ -1600,8 +1606,9 @@ class Model
 	{
 		$class = get_called_class();
 
-		if (func_num_args() <= 0)
+        if (func_num_args() <= 0) {
 			throw new RecordNotFound("Couldn't find $class without an ID");
+        }
 
 		$args = func_get_args();
 		$options = static::extract_and_validate_options($args);

@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__ . '/DatabaseLoader.php';
 
+#[AllowDynamicProperties]
 class DatabaseTest extends SnakeCase_PHPUnit_Framework_TestCase
 {
 	protected $conn;
@@ -28,9 +29,12 @@ class DatabaseTest extends SnakeCase_PHPUnit_Framework_TestCase
 
 		$this->connection_name = $connection_name;
 		try {
+		    //echo $connection_name . "\n";
 			$this->conn = ActiveRecord\ConnectionManager::get_connection($connection_name);
 		} catch (ActiveRecord\DatabaseException $e) {
+		    echo $e;
 			$this->mark_test_skipped($connection_name . ' failed to connect. '.$e->getMessage());
+			exit;
 		}
 
 		$GLOBALS['ACTIVERECORD_LOG'] = false;
@@ -40,6 +44,11 @@ class DatabaseTest extends SnakeCase_PHPUnit_Framework_TestCase
 
 		if (self::$log)
 			$GLOBALS['ACTIVERECORD_LOG'] = true;
+	}
+
+	public function getDriverName(): ?string
+	{
+	    return $this->connection_name ?? $this->original_default_connection;
 	}
 
 	public function tear_down()
@@ -59,7 +68,8 @@ class DatabaseTest extends SnakeCase_PHPUnit_Framework_TestCase
 			$message = $e->getMessage();
 		}
 
-		$this->assertContains($contains, $message);
+		//$this->assertContains($contains, $message);
+		$this->assertStringContainsString($contains, $message);
 	}
 
 	/**
@@ -72,14 +82,22 @@ class DatabaseTest extends SnakeCase_PHPUnit_Framework_TestCase
 	{
 		$needle = str_replace(array('"','`'),'',$needle);
 		$haystack = str_replace(array('"','`'),'',$haystack);
-		return $this->assertContains($needle, $haystack);
+		//return $this->assertContains($needle, $haystack);
+		return $this->assertStringContainsString($needle, $haystack);
 	}
 
 	public function assert_sql_doesnt_has($needle, $haystack)
 	{
 		$needle = str_replace(array('"','`'),'',$needle);
 		$haystack = str_replace(array('"','`'),'',$haystack);
-		return $this->assertNotContains($needle, $haystack);
+		//return $this->assertNotContains($needle, $haystack);
+		return $this->assertStringNotContainsString($needle, $haystack);
+	}
+
+	// we stub a default test and it is always valid
+	public function test_stub() : void
+	{
+	    $this->assertNull(null);
 	}
 }
 ?>

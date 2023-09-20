@@ -150,7 +150,7 @@ function wrap_strings_in_arrays(&$strings)
 {
 	if (!is_array($strings))
 		$strings = array(array($strings));
-	else 
+	else
 	{
 		foreach ($strings as &$str)
 		{
@@ -218,9 +218,9 @@ class Utils
 		return false;
 	}
 
-	public static function is_blank($var)
+	public static function is_blank(?string $var='')
 	{
-		return 0 === strlen($var);
+		return 0 === strlen($var ?? '');
 	}
 
 	private static $plural = array(

@@ -109,7 +109,8 @@ abstract class Connection
 	{
 		$config = Config::instance();
 
-		if (strpos($connection_string_or_connection_name, '://') === false)
+		//strpos(): Passing null to parameter #1 ($haystack) of type string is deprecated
+		if (strpos($connection_string_or_connection_name ?? '', '://') === false)
 		{
 			$connection_string = $connection_string_or_connection_name ?
 				$config->get_connection($connection_string_or_connection_name) :

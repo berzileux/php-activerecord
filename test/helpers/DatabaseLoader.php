@@ -1,4 +1,6 @@
 <?php
+
+#[AllowDynamicProperties]
 class DatabaseLoader
 {
 	private $db;

@@ -38,10 +38,10 @@ abstract class Singleton
 
 	/**
 	 * Singleton objects should not be cloned.
-	 *
+	 * removed final private function __clone() {}
 	 * @return void
 	 */
-	final private function __clone() {}
+	private function __clone() {}
 
 	/**
 	 * Similar to a get_called_class() for a child class to invoke.

@@ -22,6 +22,7 @@ interface InterfaceRelationship
  * @package ActiveRecord
  * @see http://www.phpactiverecord.org/guides/associations
  */
+#[\AllowDynamicProperties]
 abstract class AbstractRelationship implements InterfaceRelationship
 {
 	/**
@@ -291,7 +292,7 @@ abstract class AbstractRelationship implements InterfaceRelationship
 		if (!has_absolute_namespace($class_name) && isset($this->options['namespace'])) {
 			$class_name = $this->options['namespace'].'\\'.$class_name;
 		}
-		
+
 		$reflection = Reflections::instance()->add($class_name)->get($class_name);
 
 		if (!$reflection->isSubClassOf('ActiveRecord\\Model'))
@@ -426,6 +427,7 @@ abstract class AbstractRelationship implements InterfaceRelationship
  * @see http://www.phpactiverecord.org/guides/associations
  * @see valid_association_options
  */
+#[\AllowDynamicProperties]
 class HasMany extends AbstractRelationship
 {
 	/**
@@ -507,7 +509,7 @@ class HasMany extends AbstractRelationship
 				$fk = $this->foreign_key;
 
 				$this->set_keys($this->get_table()->class->getName(), true);
-				
+
 				$class = $this->class_name;
 				$relation = $class::table()->get_relationship($this->through);
 				$through_table = $relation->get_table();
@@ -536,7 +538,7 @@ class HasMany extends AbstractRelationship
 	 * @access private
 	 * @return array
 	 */
-	private function get_foreign_key_for_new_association(Model $model)
+	private function get_foreign_key_for_new_association(Model $model) : array
 	{
 		$this->set_keys($model);
 		$primary_key = Inflector::instance()->variablize($this->foreign_key[0]);
@@ -601,7 +603,14 @@ class HasMany extends AbstractRelationship
 		return $record;
 	}
 
-	public function load_eagerly($models=array(), $attributes=array(), $includes, Table $table)
+	/**
+	 *
+	 * @param array $models
+	 * @param array $attributes
+	 * @param array $includes we default to null
+	 * @param Table $table we default to null
+	 */
+	public function load_eagerly(array $models=array(), array $attributes=array(), array $includes = null, Table $table = null)
 	{
 		$this->set_keys($table->class->name);
 		$this->query_and_attach_related_models_eagerly($table,$models,$attributes,$includes,$this->foreign_key, $table->pk);
@@ -683,6 +692,7 @@ class HasAndBelongsToMany extends AbstractRelationship
  * @see valid_association_options
  * @see http://www.phpactiverecord.org/guides/associations
  */
+#[\AllowDynamicProperties]
 class BelongsTo extends AbstractRelationship
 {
 	public function __construct($options=array())
@@ -723,7 +733,7 @@ class BelongsTo extends AbstractRelationship
 		return $class::first($options);
 	}
 
-	public function load_eagerly($models=array(), $attributes, $includes, Table $table)
+	public function load_eagerly(array $models=array(), array $attributes=array(), array $includes=null, Table $table=null)
 	{
 		$this->query_and_attach_related_models_eagerly($table,$models,$attributes,$includes, $this->primary_key,$this->foreign_key);
 	}

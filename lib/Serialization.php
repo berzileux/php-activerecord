@@ -107,7 +107,7 @@ abstract class Serialization
 		$this->check_except();
 		$this->check_methods();
 		$this->check_include();
-		$this->check_only_method();        
+		$this->check_only_method();
 	}
 
 	private function check_only()
@@ -143,7 +143,7 @@ abstract class Serialization
 			}
 		}
 	}
-	
+
 	private function check_only_method()
 	{
 		if (isset($this->options['only_method']))
@@ -321,6 +321,11 @@ class XmlSerializer extends Serialization
 
 			if (is_array($value) || is_object($value))
 			{
+			    //https://www.php.net/manual/en/migration81.deprecated.php#:~:text=Calling%20key()%2C%20current(),auto_detect_line_endings%20INI%20directive%20is%20deprecated.
+			    if ( is_object($value) )
+			    {
+			     $value = get_mangled_object_vars($value);
+			    }
 				if (!is_int(key($value)))
 				{
 					$this->writer->startElement($attr);

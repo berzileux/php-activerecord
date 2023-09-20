@@ -9,3 +9,5 @@ vendor/*
 composer.lock
 phpunit.xml
 .idea
+.phpunit.cache/*
+.phpunit.result.cache

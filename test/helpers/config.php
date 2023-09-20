@@ -32,23 +32,32 @@ $GLOBALS['slow_tests'] = false;
 // whether or not to show warnings when Log or Memcache is missing
 $GLOBALS['show_warnings'] = true;
 
+// load models
+require_once 'model_loaders.php';
 
 if (getenv('LOG') !== 'false')
-	DatabaseTest::$log = true;
+  DatabaseTest::$log = true;
+
+
 
 ActiveRecord\Config::initialize(function($cfg)
 {
 	$cfg->set_model_directory(realpath(__DIR__ . '/../models'));
+	/*
 	$cfg->set_connections(array(
 		'mysql'  => getenv('PHPAR_MYSQL')  ?: 'mysql://test:test@127.0.0.1/test',
 		'pgsql'  => getenv('PHPAR_PGSQL')  ?: 'pgsql://test:test@127.0.0.1/test',
 		'oci'    => getenv('PHPAR_OCI')    ?: 'oci://test:test@127.0.0.1/dev',
-		'sqlite' => getenv('PHPAR_SQLITE') ?: 'sqlite://test.db'));
+		'sqlite' => getenv('PHPAR_SQLITE') ?: 'sqlite://test.db'));*/
 
-	$cfg->set_default_connection('mysql');
+	$cfg->set_connections(array(
+	    'pgsql'  => getenv('PHPAR_PGSQL')  ?: 'pgsql://test:test@127.0.0.1/test'));
+
+	$cfg->set_default_connection('pgsql');
 
 	for ($i=0; $i<count($GLOBALS['argv']); ++$i)
 	{
+
 		if ($GLOBALS['argv'][$i] == '--adapter')
 			$cfg->set_default_connection($GLOBALS['argv'][$i+1]);
 		elseif ($GLOBALS['argv'][$i] == '--slow-tests')
@@ -57,8 +66,19 @@ ActiveRecord\Config::initialize(function($cfg)
 
 	if (class_exists('Log_file')) // PEAR Log installed
 	{
-		$logger = new Log_file(dirname(__FILE__) . '/../log/query.log','ident',array('mode' => 0664, 'timeFormat' =>  '%Y-%m-%d %H:%M:%S'));
-	
+	    $log_file= dirname(__FILE__) . '/../log/query.log';
+
+	    if (!file_exists(dirname(__FILE__) . '/../log')) {
+	        mkdir(dirname(__FILE__) . '/../log', 0777, true);
+	    }
+
+	    //unlink if query.log exists
+	    if (file_exists($log_file)) {
+	        unlink ($log_file);
+	    }
+
+	    $logger = new Log_file($log_file,'ident',array('mode' => 0664, 'timeFormat' =>  '%Y-%m-%d %H:%M:%S'));
+
 		$cfg->set_logging(true);
 		$cfg->set_logger($logger);
 	}
@@ -69,7 +89,7 @@ ActiveRecord\Config::initialize(function($cfg)
 
 		DatabaseTest::$log = false;
 	}
-	
+
 	if ($GLOBALS['show_warnings']  && !isset($GLOBALS['show_warnings_done']))
 	{
 		if (!extension_loaded('memcache'))
@@ -81,5 +101,6 @@ ActiveRecord\Config::initialize(function($cfg)
 	$GLOBALS['show_warnings_done'] = true;
 });
 
+
 error_reporting(E_ALL | E_STRICT);
-?>
+

@@ -1,6 +1,7 @@
 <?php
 use ActiveRecord\Column;
 
+#[AllowDynamicProperties]
 class AdapterTest extends DatabaseTest
 {
 	const InvalidDb = '__1337__invalid_db__';
@@ -36,18 +37,21 @@ class AdapterTest extends DatabaseTest
 	}
 
 	/**
-	 * @expectedException ActiveRecord\DatabaseException
+	 * deprecated expectedException ActiveRecord\DatabaseException
 	 */
 	public function test_invalid_connection_protocol()
 	{
+	    $this->expectException(ActiveRecord\DatabaseException::class);
 		ActiveRecord\Connection::instance('terribledb://user:pass@host/db');
 	}
 
 	/**
-	 * @expectedException ActiveRecord\DatabaseException
+	 * deprecated expectedException ActiveRecord\DatabaseException
 	 */
 	public function test_no_host_connection()
 	{
+	    $this->expectException(ActiveRecord\DatabaseException::class);
+
 		if (!$GLOBALS['slow_tests'])
 			throw new ActiveRecord\DatabaseException("");
 
@@ -55,10 +59,12 @@ class AdapterTest extends DatabaseTest
 	}
 
 	/**
-	 * @expectedException ActiveRecord\DatabaseException
+	 * deprecated expectedException ActiveRecord\DatabaseException
 	 */
 	public function test_connection_failed_invalid_host()
 	{
+	    $this->expectException(ActiveRecord\DatabaseException::class);
+
 		if (!$GLOBALS['slow_tests'])
 			throw new ActiveRecord\DatabaseException("");
 
@@ -66,18 +72,22 @@ class AdapterTest extends DatabaseTest
 	}
 
 	/**
-	 * @expectedException ActiveRecord\DatabaseException
+	 * deprecated expectedException ActiveRecord\DatabaseException
 	 */
 	public function test_connection_failed()
 	{
+	    $this->expectException(ActiveRecord\DatabaseException::class);
+
 		ActiveRecord\Connection::instance("{$this->conn->protocol}://baduser:badpass@127.0.0.1/db");
 	}
 
 	/**
-	 * @expectedException ActiveRecord\DatabaseException
+	 * deprecated expectedException ActiveRecord\DatabaseException
 	 */
 	public function test_connect_failed()
 	{
+	    $this->expectException(ActiveRecord\DatabaseException::class);
+
 		ActiveRecord\Connection::instance("{$this->conn->protocol}://zzz:zzz@127.0.0.1/test");
 	}
 
@@ -95,15 +105,18 @@ class AdapterTest extends DatabaseTest
 		}
 		$connection_string = "{$connection_string}@{$url['host']}:$port{$url['path']}";
 
-		if ($this->conn->protocol != 'sqlite')
-			ActiveRecord\Connection::instance($connection_string);
+		//if ($this->conn->protocol != 'sqlite')
+		$handle = ActiveRecord\Connection::instance($connection_string);
+		$this->assertInstanceOf(ActiveRecord\Connection::class, $handle);
 	}
 
 	/**
-	 * @expectedException ActiveRecord\DatabaseException
+	 * deprecated expectedException ActiveRecord\DatabaseException
 	 */
 	public function test_connect_to_invalid_database()
 	{
+	    $this->expectException(ActiveRecord\DatabaseException::class);
+
 		ActiveRecord\Connection::instance("{$this->conn->protocol}://test:test@127.0.0.1/" . self::InvalidDb);
 	}
 
@@ -118,9 +131,9 @@ class AdapterTest extends DatabaseTest
 	public function test_date()
 	{
 		$columns = $this->conn->columns('authors');
-		$this->assert_equals('date', $columns['some_Date']->raw_type);
-		$this->assert_equals(Column::DATE, $columns['some_Date']->type);
-		$this->assert_true($columns['some_Date']->length >= 7);
+		$this->assert_equals('date', $columns['some_date']->raw_type);
+		$this->assert_equals(Column::DATE, $columns['some_date']->type);
+		$this->assert_true($columns['some_date']->length >= 7);
 	}
 
 	public function test_columns_no_inflection_on_hash_key()
@@ -193,10 +206,11 @@ class AdapterTest extends DatabaseTest
 	}
 
 	/**
-	 * @expectedException ActiveRecord\DatabaseException
+	 * deprecated expectedException ActiveRecord\DatabaseException
 	 */
 	public function test_invalid_query()
 	{
+	    $this->expectException(ActiveRecord\DatabaseException::class);
 		$this->conn->query('alsdkjfsdf');
 	}
 
@@ -264,7 +278,7 @@ class AdapterTest extends DatabaseTest
 	public function test_columnsx()
 	{
 		$columns = $this->conn->columns('authors');
-		$names = array('author_id','parent_author_id','name','updated_at','created_at','some_Date','some_time','some_text','encrypted_password','mixedCaseField');
+		$names = array('author_id','parent_author_id','name','updated_at','created_at','some_date','some_time','some_text','encrypted_password','mixedCaseField');
 
 		if ($this->conn instanceof ActiveRecord\OciAdapter)
 			$names = array_filter(array_map('strtolower',$names),function($s) { return $s !== 'some_time'; });

@@ -5,7 +5,7 @@ CREATE TABLE authors(
 	name VARCHAR  (25) NOT NULL DEFAULT default_name, -- don't touch those spaces
 	updated_at datetime,
 	created_at datetime,
-	some_Date date,
+	some_date date,
 	some_time time,
 	some_text text,
 	encrypted_password varchar(50),

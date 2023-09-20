@@ -119,11 +119,13 @@ class DateTime extends \DateTime implements DateTimeInterface
 	 */
 	public static function createFromFormat($format, $time, $tz = null)
 	{
+	    //
 		$phpDate = $tz ? parent::createFromFormat($format, $time, $tz) : parent::createFromFormat($format, $time);
 		if (!$phpDate)
 			return false;
 		// convert to this class using the timestamp
-		$ourDate = new static(null, $phpDate->getTimezone());
+		// php8.2 - DateTime::__construct(): Passing null to parameter #1 ($datetime) of type string is deprecated
+		$ourDate = new static('now', $phpDate->getTimezone());
 		$ourDate->setTimestamp($phpDate->getTimestamp());
 		return $ourDate;
 	}
@@ -182,13 +184,13 @@ class DateTime extends \DateTime implements DateTimeInterface
 		$this->flag_dirty();
 		return parent::setTimezone($timezone);
 	}
-	
+
 	public function modify($modify)
 	{
 		$this->flag_dirty();
 		return parent::modify($modify);
 	}
-	
+
 	public function add($interval)
 	{
 		$this->flag_dirty();
