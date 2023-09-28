@@ -84,7 +84,7 @@ class DateTime extends \DateTime implements DateTimeInterface
 	 * @param string $format A format string accepted by get_format()
 	 * @return string formatted date and time string
 	 */
-	public function format(string $format) : string
+	public function format($format=null) : string
 	{
 		return parent::format(self::get_format($format));
 	}
@@ -117,6 +117,7 @@ class DateTime extends \DateTime implements DateTimeInterface
 	 * This needs to be overriden so it returns an instance of this class instead of PHP's \DateTime.
 	 * See http://php.net/manual/en/datetime.createfromformat.php
 	 */
+	#[\ReturnTypeWillChange]
 	public static function createFromFormat($format, $time, $tz = null)
 	{
 	    //
@@ -155,49 +156,57 @@ class DateTime extends \DateTime implements DateTimeInterface
 			$this->model->flag_dirty($this->attribute_name);
 	}
 
+	#[\ReturnTypeWillChange]
 	public function setDate($year, $month, $day)
 	{
 		$this->flag_dirty();
 		return parent::setDate($year, $month, $day);
 	}
 
+	#[\ReturnTypeWillChange]
 	public function setISODate($year, $week , $day = 1)
 	{
 		$this->flag_dirty();
 		return parent::setISODate($year, $week, $day);
 	}
 
+	#[\ReturnTypeWillChange]
 	public function setTime($hour, $minute, $second = 0, $microseconds = 0)
 	{
 		$this->flag_dirty();
 		return parent::setTime($hour, $minute, $second);
 	}
 
-	public function setTimestamp(int $unixtimestamp) : DateTime
+	#[\ReturnTypeWillChange]
+	public function setTimestamp($unixtimestamp)
 	{
 		$this->flag_dirty();
 		return parent::setTimestamp($unixtimestamp);
 	}
 
-	public function setTimezone(DateTimeZone $timezone) : DateTime
+	#[\ReturnTypeWillChange]
+	public function setTimezone($timezone)
 	{
 		$this->flag_dirty();
 		return parent::setTimezone($timezone);
 	}
 
+	#[\ReturnTypeWillChange]
 	public function modify($modify)
 	{
 		$this->flag_dirty();
 		return parent::modify($modify);
 	}
 
+	#[\ReturnTypeWillChange]
 	public function add($interval)
 	{
 		$this->flag_dirty();
 		return parent::add($interval);
 	}
 
-	public function sub(DateInterval $interval) : DateTime
+	#[\ReturnTypeWillChange]
+	public function sub($interval)
 	{
 		$this->flag_dirty();
 		return parent::sub($interval);
