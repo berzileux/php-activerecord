@@ -84,6 +84,7 @@ class DateTime extends \DateTime implements DateTimeInterface
 	 * @param string $format A format string accepted by get_format()
 	 * @return string formatted date and time string
 	 */
+	#[\ReturnTypeWillChange]
 	public function format($format=null)
 	{
 		return parent::format(self::get_format($format));
