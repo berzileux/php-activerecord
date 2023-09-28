@@ -84,7 +84,7 @@ class DateTime extends \DateTime implements DateTimeInterface
 	 * @param string $format A format string accepted by get_format()
 	 * @return string formatted date and time string
 	 */
-	public function format($format=null)
+	public function format(string $format) : string
 	{
 		return parent::format(self::get_format($format));
 	}
@@ -173,13 +173,13 @@ class DateTime extends \DateTime implements DateTimeInterface
 		return parent::setTime($hour, $minute, $second);
 	}
 
-	public function setTimestamp($unixtimestamp)
+	public function setTimestamp(int $unixtimestamp) : DateTime
 	{
 		$this->flag_dirty();
 		return parent::setTimestamp($unixtimestamp);
 	}
 
-	public function setTimezone($timezone)
+	public function setTimezone(DateTimeZone $timezone) : DateTime
 	{
 		$this->flag_dirty();
 		return parent::setTimezone($timezone);
@@ -197,7 +197,7 @@ class DateTime extends \DateTime implements DateTimeInterface
 		return parent::add($interval);
 	}
 
-	public function sub($interval)
+	public function sub(DateInterval $interval) : DateTime
 	{
 		$this->flag_dirty();
 		return parent::sub($interval);
